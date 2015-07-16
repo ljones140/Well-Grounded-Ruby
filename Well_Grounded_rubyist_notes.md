@@ -346,4 +346,174 @@ or equals operator:
  @stack ||= []
  stack equals a [] if false or nil
 ```
+
+stacklike.rb:
+```
+module Stacklike
+  def stack
+    @stack ||= []
+  end
+  def add_to_stack(obj)
+    stack.push(obj)
+  end
+  def take_from_stack
+    stack.pop
+  end
+end
+```
+
+stack.rb contains the class
+
+```
+require_relative "stacklike" #file stacklike required
+class Stack
+  include Stacklike #includes the stacklike module from stacklike.rb
+end
+```
+
+Diff require and include: 
+Require/load takes a string (loading from disk space)
+include/prepend takes the name of the module in form of a Constant (in memory operation)
+
+two operations go together but are seperate from each other. 
+
+Typical but not mandatory to name classes as nouns and modules as adjectives
+
+Modules usefull as you can give class methods to different classses by using require and include. 
+Can remove repetition from code. 
+With cargohold.rb example the Stacklike module is used but method names changed in Cargohold class
+
+
+```
+class Cargohold
+  include Stacklike
+  def load_and_report(obj)
+    print "Loading object "
+    puts obj.object_id
+
+    add_to_stack(obj)
+  end
+  def unload
+    take_from_stack
+  end
+end
+```
+
+**Method Look up**
+
+When an object is sent a message which is a method the lookup of that message will go up the heierachy of classes and mixins(method-lookup path) the object has until it finds the message or not. method_missing is default error method if no method found.
+
+All objects superclass is Object and object has the module Kernel.
+BasicObject is the ancestor for all objects
+
+**Defining same method > 1**
+
+If an object receives a message to receive a message but it occurs > 1 in the onbject method-lookup path it will execute the first method of the name it sees.
+
+```
+module A
+  def monkey_method
+    puts "cocoa pops"
+  end
+end
+
+module B
+  def monkey_method
+    puts "bananas"
+  end
+end
+
+class Monkey
+  include A
+  include B
+end
+
+bubbles = Monkey.new
+bubbles.monkey_method
+
+```
+if monkey_method called Bananas from module B is executed as 1st on lookup list. Even if you add include A again
+
+**prepend** however is different. object lookup path checks prepend first even in method is defined in object
+
+```
+class Monkey
+  include A
+  prepend B
+  include A
+  def monkey_method
+    puts "nuts!!!"
+  end
+end
+```
+
+prepend changes the Monkey.ancestors array
+[B, Monkey, A, Object, Kernel, BasicObject]
+
+with B included it is
+[Monkey, B, A, Object, Kernel, BasicObject]
+
+**super**
+
+A call to super inside a method. If the method is caled it is executed but whne the code sees super it carries on and finds the higher method and calls that. Calling parts from 2 methods or more.
+Allows appending to methods in classes or modules to stop repetiton.
+super also passes arguments given/or not given up to it's ancestors
+
+```
+module A
+  def monkey_method
+    puts "cocoa pops"
+  end
+end
+
+module B
+  def monkey_method
+    puts "bananas"
+    super
+  end
+end
+
+class Monkey
+  include A
+  include B
+end
+```
+
+Can intercept missing methods with yor own object
+```
+o = Object.new
+
+
+def o.method_missing(m,*args)
+  puts "you can't call #{m} on this object"
+end
+```
+
+personclass.rb has a class method for creating a method is method missed is called and the method name and certain creietera are passed.
+
+Design quesstions: Moduels vs classes
+
+Modules cannot be instanced like a class.modules don;t have instance
+
+Class can only have one superclass. A module may benefit if mixing needed but module makes more sense as a other class is a better superclass
+
+Using modules for class name seperation
+
+```
+module Tools
+  class Hammer
+  end
+end
+
+h = Tools::Hammer.new
+```
+
+This is helpful if you have classes with the same name. Toffee::Hammer Tools::Hammer
+
+
+
+
 > Written with [StackEdit](https://stackedit.io/).
+
+
+
