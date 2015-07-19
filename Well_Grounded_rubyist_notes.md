@@ -511,6 +511,301 @@ h = Tools::Hammer.new
 This is helpful if you have classes with the same name. Toffee::Hammer Tools::Hammer
 
 
+Chapter 5 Default object (self) scope and visibility
+--------------
+
+
+Self the current/default object
+-----------------------
+
+Only one object is self at any point while a ruby program runs. 
+Self is determented by what context you're in.
+
+Any code outside of blocks man built in top-level default.
+
+in class or module the module or class object
+
+in method in class: instance of class responding to method name.
+
+in method in module: object extended by module or instance of class that mixes in module
+
+singleton Obj. Obj
+
+puts self outside of a class or methos will return 'main'
+main is a special term that default self object uses to refer to itself
+
+
+inside class, methods modules
+-----------------------------
+
+in Class or Module definitions 'self' is the call or module object
+
+if moudule is nested in a class that the self for the module is Class::Module
+
+Instance method definition
+--------------------------
+
+when method is called 'self' will be the object that called it. The receiver of the message.
+
+call to self from instance method will give class and memory-location reference:
+self is #<C:0x007fbe0b895af0>
+
+Singleton method and class definitions
+---------
+```
+Inside singleton mehtod of #<Object:0x007fd84c833de0>
+that was a call to show_me from #<Object:0x007fd84c833de0>
+```
+
+It is advantages in class methods to use self as the name of the object calling the method. You can also use the class name but if you chaneg the name you have to change the calls. Self works with any changes.
+
+self as default receiver
+----------------------
+
+if receiver of a method is self you can ommit the dot on self.method
+if there is a variable with same name as the mehtod the variable takes precedence
+
+Most common use is calling one instance of a method from another
+
+```
+Class C
+  def X
+    some stuff
+  end
+  def y
+    some stuff
+    x  #if y is called then x is called from this line
+  end
+end
+```
+
+One case where you have to be explicit with self if the method is a setter method 
+
+```
+self.venue = "shoebox"
+```
+if no self you are setting the variable venue rather than calling the mehod
+
+example of using method name without self to neated code:
+
+```
+class Person
+  attr_accessor :first_name, :middle_name, :last_name
+  def whole_name
+    n = first_name + " "
+    n << "#{middle_name} " if middle_name
+    n << last_name
+  end
+end
+```
+the *_name methods are called without self.. this makes code easier to read
+
+
+Resolvinv vaiables through self.
+inside different objects methods have their own definition. seperate from others
+@v in the example below is only set once. the @v in the method is nil
+```
+class C
+  puts "Just inside call def block here's self"
+  p self
+  @v = "I am an instance variable at top level class body"
+  puts "and here is the instance variable @v belonging to #{self}"
+  p @v
+  def show_var
+    puts "Inside an intance method defition block here's self"
+    p self
+    puts "and here is the instance variable @v belonging to #{self}"
+    p @v
+  e
+```
+Returns:
+
+Just inside call def block here's self
+C
+and here is the instance variable @v belonging to C
+"I am an instance variable at top level class body"
+Inside an intance method defition block here's self
+#<C:0x007fe2ca1aaef0>
+and here is the instance variable @v belonging to #<C:0x007fe2ca1aaef0>
+nil
+
+Scope
+-----
+
+Global variables accessable anywhere. They walk though walls start with $
+$gvar
+
+Ruby comes with a large number of pre-defined global variables. 
+
+Rarely good to make your own global variables
+
+Local scope
+-----------
+
+At any given moment program is in a local scope. Scope changes as you cross between top-level, class or module and methods.
+
+Variables set within these boundaries are seperate. Even if same name.
+
+```
+class C
+  a = 10
+  def some_method
+    a = 20
+  end
+end
+```
+"a" above is the name of two different variables in different scopes.
+
+Code in class and module definition blocks get executed when encountered. Methods are not executed until an object is sent appropriate message.
+
+
+```
+class C
+  def x(value_for_a, recurse=false)
+    a = value_for_a
+    print " here's inspect string for self"
+    p self
+    puts "and here is a:"
+    puts a
+    if recurse
+      puts "Calling myself(recursion).."
+      x("second value for a")
+      puts "Back after recursion"
+      puts a
+    end
+  end
+end
+
+c = C.new
+c.x("first value fo a", true)
+```
+
+returns
+ here's inspect string for self#<C:0x007ff103122068>
+and here is a:
+first value fo a
+Calling myself(recursion)..
+ here's inspect string for self#<C:0x007ff103122068>
+and here is a:
+second value for a
+Back after recursion
+first value fo a
+
+
+Scope and resolution of constants
+---------------------------------
+
+Constants resolved by walking tree of class and modules using ::
+
+Constants are vars in capitals. Constant lookup similar to file/directory lookup. bear in mind when looking up constants from inside parts of the path. Walk the tree from the branch you are on.
+
+```
+puts M::C::D::N::X
+```
+
+constants are not to be scared of such as Global Variables as even though accessable form anywhere usign the above method they are still in theor scope. Constant X above does not have the same meaning as $x. X is still in it's own scope.
+
+Class variables syntax, scope and visibility
+----------------------------------------
+
+class variable example @@var
+
+Class variables are shared between a class and instances of the class. Not visible to anyone else.
+
+See car class exampe in Chapter 5/code.rb
+
+Also class variables are not like contants and will be overwritten.
+
+```
+class Parent
+  @@var = 100
+end
+
+Class Child < Parent
+  @@var = 200
+end
+
+Class Parent
+  puts @@var
+end
+```
+returned @@var is 200 overwitten by the Child
+
+Class variables are not always useful becuase of this so it is beneficial to use Class instance variables.
+Classes are objects and have their own instances as do the intances of the objects fromt he class.
+
+See car example in code.rb and the total_count
+
+```
+def self.total_count        #this has been added so that when initialize 1st called total_count = 0 (
+    @total_count ||= 0        #subsquuent calls it will return value.
+  end
+  def self.total_count=(n)    #this is the setter for total count. being called as a class instance
+    @total_count = n
+  end
+```
+
+Method access Rules
+-------------------
+
+All messages sent to methods unless explicit are Public.
+
+Private Methods
+---------------
+
+Private methods can be written
+```
+private :pour_flour, :add_egg, :stir_batter
+```
+or just private and the methods you define below will be private.
+
+Private methods cannot be called outside  objects. 
+
+You can only call them on self and only without an explicit receiver. Therefore only to be called inside the objects classes etc
+
+Private setter methods are expcetions to the rule but can only be called by the word self. Not the actual self
+
+```
+Class dog
+  att_reader :age, :dog_years
+  def dog_years=(years)
+    @dogyears = years
+  end
+  def age=(years)
+    @age = years
+    self.dog_years = years * 7 #this must be self dog = self then dog used will not work
+  end
+  private :dog_years
+end
+```
+Protected Methods
+--------------------
+
+They are similar to private but does allow you to call a protected method on an object x as longs as te self is an instance of the same class as x or an ancester or decendant class of x's class/
+
+Top level methods
+------------------
+
+Writing simple scripts outside of classes or modules. Methods are a private instance methid of the object class.
+
+These follow the same rules as only being able to be called on self without an explicit receiver but think about it becuase that is what you do with these types of scripts.
+
+```
+def talks
+  puts "Hello"
+end
+```
+
+is the same as:
+
+```
+class Object
+  private
+  def talks
+    puts "Hello"
+  end
+end
+```
 
 
 > Written with [StackEdit](https://stackedit.io/).
