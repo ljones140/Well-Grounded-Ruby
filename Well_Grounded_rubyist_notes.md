@@ -1045,7 +1045,7 @@ The return of case statements is the winning clause or the else. If no else and 
 
 
 could write above like
-```
+
 
 ```
 puts case
