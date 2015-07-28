@@ -844,7 +844,8 @@ else and elseif can also be used
 
 ```
 if not (x==1)
-This does not require parenthesis```
+```
+This does not require parenthesis
 
 can also use ! (exclamation mark or bang)
 
