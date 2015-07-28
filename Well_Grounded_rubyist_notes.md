@@ -22,7 +22,7 @@ Objects
 
 Object.new will create a blank object
 
-objects are created with soem methods automaticall. 
+objects are created with soem methods automaticall.
 
 p Object.new.methods.sort (sort is just to look nice on screen)
 
@@ -100,9 +100,9 @@ args_unleashed(1,2,3,4,5,6,7,8)
 
 args_unleashed(1,2) #WILL fail
 ```
-Rules: 
-  can only have one (*x) per list. 
-  a default agrument can never go on the right of a * argument. This is illegal (a,*b,c=1) 
+Rules:
+  can only have one (*x) per list.
+  a default agrument can never go on the right of a * argument. This is illegal (a,*b,c=1)
 
 Variables
 ---------
@@ -167,7 +167,7 @@ You can freeze an array stopping the variables from being assign BUT you can use
 Chapter 3: Organising Objects with classes
 -------------------------------------------
 
-class starts with Capital letter is a constant. 
+class starts with Capital letter is a constant.
 
 when you define a object method outside of a class that is a singleton method.
 class instance objects can be overwritten (and so can singletons). When  you overide method new version takes precedence
@@ -184,7 +184,7 @@ def set_price(amount)
    @price = amount
 end
 ```
-is equivilent to 
+is equivilent to
 ```
 def price=(amount)
     @price = amount
@@ -193,7 +193,7 @@ end
 however when you define with = you need to write: ticket.price = (63.00)
 AND remember you still need below definition
 def price
-  @price 
+  @price
 end
 ```
 attr_reader and attr_writer
@@ -206,7 +206,7 @@ attr_reader :venue, :date, :price
 equivalent code:
 ```
   def price
-    @price 
+    @price
   end
   def venue
     @venue
@@ -216,10 +216,10 @@ equivalent code:
   end
 ```
 This:
-``` 
+```
  attr_writer :price
 ```
-equivilent code: 
+equivilent code:
 ```
 def price=(amount)
     @price = amount
@@ -231,7 +231,7 @@ attr_accessor : does both reading and writing
 or ```attr :element, true ```
 but accessor is clearer and can take mulpitple objects where attr can only take one
 
-Inheretence 
+Inheretence
 --------------
 ```
 class Publication
@@ -259,7 +259,7 @@ Objects superclass is BasicObject
 
 Classes are also objects and classes
 
-Class methods:  
+Class methods:
 
 With ticket for example we can have a class method which is a method called on the class not a instance of a call
 ```
@@ -300,26 +300,26 @@ class Ticket
   def initialize(venue,date)
     if VENUES.include?(venue)
       @venue = venue
-    else 
+    else
       raise ArgumentError, "Unknown venue #{venue}"
     end
     @date = date
   end
 ```
 VENUES is a constant which will produce error if an allowed venue is not added as a parameter.
- 
-Access the constant outside of the class with :: Ticket::VENUES  
+
+Access the constant outside of the class with :: Ticket::VENUES
 
 It is not good practice to change a constant and you will get a warning if you try but you can modify the object to which the constant refers. For example
 ```
 venues = Ticket::VENUES
 venues << "High School Gym"
 ```
-this adds High School Gym to the venue list as you are appending the array the constant is reverencing 
+this adds High School Gym to the venue list as you are appending the array the constant is reverencing
 
 
 Chapter 4 Modules
----------- 
+----------
 
 Modules are bundles of methods and constants
 
@@ -371,16 +371,16 @@ class Stack
 end
 ```
 
-Diff require and include: 
+Diff require and include:
 Require/load takes a string (loading from disk space)
 include/prepend takes the name of the module in form of a Constant (in memory operation)
 
-two operations go together but are seperate from each other. 
+two operations go together but are seperate from each other.
 
 Typical but not mandatory to name classes as nouns and modules as adjectives
 
-Modules usefull as you can give class methods to different classses by using require and include. 
-Can remove repetition from code. 
+Modules usefull as you can give class methods to different classses by using require and include.
+Can remove repetition from code.
 With cargohold.rb example the Stacklike module is used but method names changed in Cargohold class
 
 
@@ -518,7 +518,7 @@ Chapter 5 Default object (self) scope and visibility
 Self the current/default object
 -----------------------
 
-Only one object is self at any point while a ruby program runs. 
+Only one object is self at any point while a ruby program runs.
 Self is determented by what context you're in.
 
 Any code outside of blocks man built in top-level default.
@@ -579,7 +579,7 @@ Class C
 end
 ```
 
-One case where you have to be explicit with self if the method is a setter method 
+One case where you have to be explicit with self if the method is a setter method
 
 ```
 self.venue = "shoebox"
@@ -635,7 +635,7 @@ Scope
 Global variables accessable anywhere. They walk though walls start with $
 $gvar
 
-Ruby comes with a large number of pre-defined global variables. 
+Ruby comes with a large number of pre-defined global variables.
 
 Rarely good to make your own global variables
 
@@ -759,7 +759,7 @@ private :pour_flour, :add_egg, :stir_batter
 ```
 or just private and the methods you define below will be private.
 
-Private methods cannot be called outside  objects. 
+Private methods cannot be called outside  objects.
 
 You can only call them on self and only without an explicit receiver. Therefore only to be called inside the objects classes etc
 
@@ -805,6 +805,257 @@ class Object
     puts "Hello"
   end
 end
+```
+
+Chapter 6 Control-flow Technique
+---------
+
+
+Conditional code execution
+---------------------------
+
+Two most important code execution techniques are **if** and **case** statements
+
+*if keyword and friends*
+
+```
+if condition
+  # code here
+end
+```
+
+can also put on one line
+
+```
+if x > 10 then puts x end
+```
+
+can put semicolons to mimic line breaks
+
+```
+if x > 10; puts x; end
+```
+
+else and elseif can also be used
+
+*Negative conditions with not and !*
+
+
+
+```
+if not (x==1)
+This does not require parenthesis```
+
+can also use ! (exclamation mark or bang)
+
+
+```
+if ! (x==1)
+```
+parenthesis needed otherwise would be comparing negative x with 1
+
+Should always use parenthesis when building these constructs
+
+*Unless Keyword*
+
+more natural
+
+```
+unless x == y
+```
+
+Useful but be aware can be hard to understand if using with else where it gets flipped around. Try not to use with else. flip the condition and use if instead.
+
+*Conditional Modifiers*
+
+```
+puts "Big number!" if x > 100
+```
+
+same as
+
+```
+if x > 100
+  puts "Big number!"
+end
+```
+
+could also use
+
+```
+puts "Big number!" unless x <= 100
+```
+
+Good to sue for sho simple statements. Try not to use for long statements.
+
+*The Value of Statements*
+
+```
+x = 1
+if x < 0
+  p "negative"
+elsif x > 0
+  p "positive"
+else
+  p "zero"
+end
+```
+
+returns "positive" as elsif is triggered. if not part of an if statement is triggered ruby returns nil.
+
+*Local variable assignment in conditional body*
+
+```
+if false
+  x = 1
+end
+p x #returns nil
+p y #errors as not in memory
+```
+
+when ruby sees x = 1 it assigns x in memory even though in statement above the x = 1 should not be executed. Parser scours code for all possible local variables. Parser does not care that x is never assigned it sees the assignment and makes space in memory. x is in variable limbo it has been initalized with to nil. y gives fatal error as it does nt exist at all.
+
+None of this happens with class, instance or global variables.
+
+*Assignment in conditional test*
+
+when using
+```
+if x = 1
+  puts "hi"
+end
+```
+
+ruby will send warning as it loos like you should have used ==. No need for a programmer ever to write assignment on x = 1. Test expresstion will always succeed.
+
+Can be useful to do assigning and testing at the same time
+
+```
+name = "David A. Black"
+if m = /la/.match(name)
+  puts "Found a match"
+  print "Here's the unmatched start of a string: "
+  puts m.pre_match
+  print "Heres the unmatched part of a string: "
+  puts m.post_match
+else
+  puts "no match"
+end
+```
+
+Assignment is made to m as part of the regex match
+could have set m before the if.
+
+*Case Statements*
+
+similar to SQL
+
+```
+case answer
+  when "Yes"
+    puts "goodbye"
+    exit
+  when "no"
+    puts "ok"
+    else
+  puts "whatever"
+end
+```
+
+can have more than one possible match. comma deliminate. like an or operator.
+
+```
+case answer
+when "y", "Yes"
+  puts
+ .....
+ ```
+
+ *Threequal operator*
+
+ Case statement above can be rewritten using the === operator
+
+```
+if "yes" === answer
+  puts "Good-bye!"
+  exit
+elseif "no" === answer
+  puts "OK, we'll continue"
+else
+  puts "whatever"
+end
+```
+
+Case statements do use the threequal when when is called.
+
+when you ask a string to threequa against another string it compares each character one by one to the other string.
+
+case/when is === in disguise.
+
+you can define threequal method how you with for your own classes you can exercise contrl over the way your objects behave inside case statements.
+
+```
+class Ticket
+
+  attr_accessor :venue, :date
+
+  def initialize venue, date
+    self.venue = venue
+    self.date = date
+  end
+
+  def === (other_ticket)
+    self.venue == other_ticket.venue
+  end
+end
+
+ticket1 = Ticket.new("Town Hall", "07/08/13")
+ticket2 = Ticket.new("conference", "07/08/13")
+ticket3 = Ticket.new("Town Hall", "07/08/13")
+
+puts "ticket 1 is for ann event at #{ticket1.venue}"
+
+case ticket1
+when ticket2
+  puts "same location as ticket 2"
+when ticket3
+  puts "same location as ticket 3"
+else
+  puts "no match"
+end
+```
+
+In example above the === method is being defined to compare self.venue with other_ticket.venue. The when in the case statement triggers teh threequal comparing venues.
+
+Case statements can also be written with case on its own and no arguments, the truthful when clause will be executed.
+
+
+```
+case
+when user.name == "Lewis"
+ puts "hello Lewis"
+when Time.now.wday = 5
+  puts "it's Friday"
+else
+  puts "bye"
+end
+```
+
+The return of case statements is the winning clause or the else. If no else and no when wins then the return is nil.
+
+
+could write above like
+```
+
+```
+puts case
+  when user.name == "Lewis"
+    "hello Lewis"
+  when Time.now.wday = 5
+    "it's Friday"
+  else
+    "bye"
+  end
 ```
 
 
