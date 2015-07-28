@@ -28,11 +28,11 @@ p Object.new.methods.sort (sort is just to look nice on screen)
 
 important ones:
 
-* object_id
+** object_id
 
-* respond_to?
+** respond_to?
 
-* send (synonym:__send__)
+** send (synonym:__send__)
 
 each object has an ID
 The below will give ID
@@ -55,14 +55,14 @@ end
 ```
 multi arguments:
 ```
-def obj.multi_args(*x)
+def obj.multi_args(**x)
   p x
 end
 
 obj.multi_args(1,2,3,4,5)
 ```
 ```
-def obj.multi_args(a,b,*c)
+def obj.multi_args(a,b,**c)
   p c
 end
 
@@ -76,19 +76,19 @@ end
 ```
 Mixture of args
 ```
-def mixed_args(a,b,*c,d)
+def mixed_args(a,b,**c,d)
   puts "Arguments:"
   p a,b,c,d
 end
 ```
 mixed_args(1,2,3,4,5) Returns 1, 2, [3,4] , 5
 
-*sponge/splat paramenters get the lowest priority. If method runs out of parameters after the requred parameters are filled the *c gets nothing and is returned as an empty array.
+**sponge/splat paramenters get the lowest priority. If method runs out of parameters after the requred parameters are filled the **c gets nothing and is returned as an empty array.
 
 Args Unleashed:
 
 ```
-def args_unleashed(a,b=1,*c,d,e)
+def args_unleashed(a,b=1,**c,d,e)
   puts "Arguments unleashed:"
   p a, b, c, d, e
 end
@@ -101,8 +101,8 @@ args_unleashed(1,2,3,4,5,6,7,8)
 args_unleashed(1,2) #WILL fail
 ```
 Rules:
-  can only have one (*x) per list.
-  a default agrument can never go on the right of a * argument. This is illegal (a,*b,c=1)
+  can only have one (**x) per list.
+  a default agrument can never go on the right of a ** argument. This is illegal (a,**b,c=1)
 
 Variables
 ---------
@@ -263,7 +263,7 @@ Class methods:
 
 With ticket for example we can have a class method which is a method called on the class not a instance of a call
 ```
-def Ticket.most_expensive(*tickets)
+def Ticket.most_expensive(**tickets)
   tickets.max_by(&:price)
 end
 ```
@@ -399,14 +399,14 @@ class Cargohold
 end
 ```
 
-**Method Look up**
+****Method Look up****
 
 When an object is sent a message which is a method the lookup of that message will go up the heierachy of classes and mixins(method-lookup path) the object has until it finds the message or not. method_missing is default error method if no method found.
 
 All objects superclass is Object and object has the module Kernel.
 BasicObject is the ancestor for all objects
 
-**Defining same method > 1**
+****Defining same method > 1****
 
 If an object receives a message to receive a message but it occurs > 1 in the onbject method-lookup path it will execute the first method of the name it sees.
 
@@ -434,7 +434,7 @@ bubbles.monkey_method
 ```
 if monkey_method called Bananas from module B is executed as 1st on lookup list. Even if you add include A again
 
-**prepend** however is different. object lookup path checks prepend first even in method is defined in object
+****prepend**** however is different. object lookup path checks prepend first even in method is defined in object
 
 ```
 class Monkey
@@ -453,7 +453,7 @@ prepend changes the Monkey.ancestors array
 with B included it is
 [Monkey, B, A, Object, Kernel, BasicObject]
 
-**super**
+****super****
 
 A call to super inside a method. If the method is caled it is executed but whne the code sees super it carries on and finds the higher method and calls that. Calling parts from 2 methods or more.
 Allows appending to methods in classes or modules to stop repetiton.
@@ -484,7 +484,7 @@ Can intercept missing methods with yor own object
 o = Object.new
 
 
-def o.method_missing(m,*args)
+def o.method_missing(m,**args)
   puts "you can't call #{m} on this object"
 end
 ```
@@ -598,7 +598,7 @@ class Person
   end
 end
 ```
-the *_name methods are called without self.. this makes code easier to read
+the **_name methods are called without self.. this makes code easier to read
 
 
 Resolvinv vaiables through self.
@@ -773,7 +773,7 @@ Class dog
   end
   def age=(years)
     @age = years
-    self.dog_years = years * 7 #this must be self dog = self then dog used will not work
+    self.dog_years = years ** 7 #this must be self dog = self then dog used will not work
   end
   private :dog_years
 end
@@ -814,9 +814,9 @@ Chapter 6 Control-flow Technique
 Conditional code execution
 ---------------------------
 
-Two most important code execution techniques are **if** and **case** statements
+Two most important code execution techniques are ****if**** and ****case**** statements
 
-*if keyword and friends*
+**if keyword and friends**
 
 ```
 if condition
@@ -838,7 +838,7 @@ if x > 10; puts x; end
 
 else and elseif can also be used
 
-*Negative conditions with not and !*
+**Negative conditions with not and !**
 
 
 
@@ -857,7 +857,7 @@ parenthesis needed otherwise would be comparing negative x with 1
 
 Should always use parenthesis when building these constructs
 
-*Unless Keyword*
+**Unless Keyword**
 
 more natural
 
@@ -867,7 +867,7 @@ unless x == y
 
 Useful but be aware can be hard to understand if using with else where it gets flipped around. Try not to use with else. flip the condition and use if instead.
 
-*Conditional Modifiers*
+**Conditional Modifiers**
 
 ```
 puts "Big number!" if x > 100
@@ -889,7 +889,7 @@ puts "Big number!" unless x <= 100
 
 Good to sue for sho simple statements. Try not to use for long statements.
 
-*The Value of Statements*
+**The Value of Statements**
 
 ```
 x = 1
@@ -904,7 +904,7 @@ end
 
 returns "positive" as elsif is triggered. if not part of an if statement is triggered ruby returns nil.
 
-*Local variable assignment in conditional body*
+**Local variable assignment in conditional body**
 
 ```
 if false
@@ -918,7 +918,7 @@ when ruby sees x = 1 it assigns x in memory even though in statement above the x
 
 None of this happens with class, instance or global variables.
 
-*Assignment in conditional test*
+**Assignment in conditional test**
 
 when using
 ```
@@ -947,7 +947,7 @@ end
 Assignment is made to m as part of the regex match
 could have set m before the if.
 
-*Case Statements*
+**Case Statements**
 
 similar to SQL
 
@@ -972,7 +972,7 @@ when "y", "Yes"
  .....
  ```
 
- *Threequal operator*
+ **Threequal operator**
 
  Case statement above can be rewritten using the === operator
 
